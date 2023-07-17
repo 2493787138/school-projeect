@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const cors=require('cors')
 const router=require('./router')
 const errorHandler=require('./middleware/error-handler')
+const db=require('./db/db')
 
 const app = express()
 const PORT=3000 //端口号
@@ -31,5 +32,6 @@ app.use((req,res,next)=>{
 app.use(errorHandler())
 
 app.listen(PORT, () => {
+    //db.establish()
     console.log('server running')
 })
