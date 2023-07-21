@@ -6,16 +6,23 @@ const { search } = require("../router")
 //用户登录
 exports.login = async (req, res, next) => {
     try {
-        let user=req.body
-        db.search(user,"users","and",callback)
+        let user = req.body
+        console.log(user)
+        db.search(user, "users", "and", callback)
         function callback(result) {
-            console.log(result,'callback');
-            if(result)
-            res.send(result)
-            else
-            res.send(-1)
+            //查到了有这个用户
+            if (result.length!=0)
+            {
+                //console.log(result);
+                res.send(result)
+            }
+            else{
+            res.send({
+                message:"用户名或密码错误"
+            })
+            }    
         }
-        
+
     } catch (err) {
         next(err)
     }
