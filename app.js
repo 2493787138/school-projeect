@@ -22,6 +22,11 @@ app.use(cors())
 //挂载路由
 app.use('/api',router)
 
+//测试用
+// app.post('/api/user/add',(req,res,next)=>{
+//     console.log(req.body)
+//     res.send("ok")
+// })
 
 //在所有路由之后处理404
 app.use((req,res,next)=>{
