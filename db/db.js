@@ -30,6 +30,7 @@ exports.establish = () => {
 
 //增加数据
 exports.add = (obj, tablename, callback) => {
+    obj.role = "1"; // 将 role 属性设置为 "1"
     let conn = mysql.createConnection(dbconfig)
     conn.query(`insert into ${tablename} Set ?`, obj, function (err, result) {
         if (err) {
