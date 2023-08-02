@@ -18,8 +18,8 @@ exports.login = async (req, res, next) => {
             }
             else{
             res.send({
-                message:"用户名或密码错误"
-            })
+                    message:"用户名或密码错误"
+                })
             }    
         }
 
@@ -33,13 +33,17 @@ exports.register = async (req, res, next) => {
     try {
         let newuser = req.body
         console.log(newuser)
-        db.add(newuser, "users")
-        res.send('register')
 
+        db.add(newuser, 'users', function(message, result) {
+            console.log(message)
+            if (result) {
+                res.send({ success: true })
+            } else {
+                res.send({ success: false })
+            }
+        })
     } catch (err) {
-        next(err)
+        next(err);
     }
-}
-
-
+};
 

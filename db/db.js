@@ -29,14 +29,14 @@ exports.establish = () => {
 }
 
 //增加数据
-exports.add = (obj, tablename) => {
-    //console.log(obj)
+exports.add = (obj, tablename, callback) => {
     let conn = mysql.createConnection(dbconfig)
     conn.query(`insert into ${tablename} Set ?`, obj, function (err, result) {
-
         if (err) {
             throw err
         }
+        // 如果没有错误，则调用回调函数返回布尔值
+        callback(`成功添加用户 ${obj.username}`, result && result.affectedRows > 0)
     })
     conn.end((err) => {
         if (err) {
