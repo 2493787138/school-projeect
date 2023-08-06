@@ -31,19 +31,28 @@ exports.login = async (req, res, next) => {
 //用户注册
 exports.register = async (req, res, next) => {
     try {
-        let newuser = req.body
-        console.log(newuser)
+        let newuser = req.body;
+        console.log(newuser);
 
-        db.add(newuser, 'users', function(message, result) {
-            console.log(message)
-            if (result) {
-                res.send({ success: true })
+        // 在数据库中查找具有相同用户名的用户
+        db.find({ username: newuser.username }, 'users', function(message, result) {
+            console.log(message);
+            if (result.length > 0) {
+                // 用户名已存在
+                res.send({ success: false, message: '用户已存在！' });
             } else {
-                res.send({ success: false })
+                // 添加新用户到数据库
+                db.add(newuser, 'users', function(message, result) {
+                    console.log(message);
+                    if (result) {
+                        res.send({ success: true });
+                    } else {
+                        res.send({ success: false });
+                    }
+                });
             }
-        })
+        });
     } catch (err) {
         next(err);
     }
 };
-

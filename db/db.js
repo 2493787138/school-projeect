@@ -46,6 +46,38 @@ exports.add = (obj, tablename, callback) => {
         }
     })
 }
+//查询特定用户
+exports.find = (username, tableName, callback) => {
+    let conn = mysql.createConnection(dbconfig);
+    const keys = Object.keys(username); //获取键名数组
+    const values = Object.values(username); //获取值数组
+    var str = '';
+
+    if (keys.length > 0) {
+        for (var i = 0; i < keys.length; i++) {
+            if (typeof values[i] === 'string') {
+                if (i !== 0) str += ' AND';
+                str += ` ${keys[i]}='${values[i]}'`;
+            } else {
+                if (i !== 0) str += ' AND';
+                str += ` ${keys[i]}=${values[i]}`;
+            }
+        }
+    }
+
+    // 执行查询
+    const query = `SELECT * FROM ${tableName} WHERE ${str}`;
+    conn.query(query, function(err, rows) {
+        if (err) {
+            console.error('Error executing query:', err);
+            callback('Error executing query', null);
+            return;
+        }
+
+        conn.end(); // 关闭数据库连接
+        callback('Query executed successfully', rows);
+    });
+};
 
 //查询数据
 exports.search = (obj, tablename, method,callback) => {
