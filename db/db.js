@@ -4,29 +4,35 @@ var dbconfig = require('../config/dbconfig')//导入自定义模块
 
 //服务器连接建表
 exports.establish = () => {
-    let conn = mysql.createConnection(dbconfig)
+    let conn = mysql.createConnection(dbconfig);
     var str = [
-        "CREATE TABLE users (username varchar(20) NOT NULL,password varchar(20) NOT NULL,PRIMARY KEY (username))",
-        //将建表语句写在这里
+        "CREATE TABLE users (username varchar(20) NOT NULL, password varchar(20) NOT NULL, role int, birthdate date, gender int, PRIMARY KEY (username))",
+        // 将建表语句写在这里
+        "INSERT INTO users (username, password, role, birthdate, gender) VALUES ('admin', 'admin', 0, '2023-08-20', 0)",
+        "INSERT INTO users (username, password, role, birthdate, gender) VALUES ('user', 'user', 1, '2023-08-20', 1)"
+    ];
 
-    ]
-    str.forEach(element => {
-        conn.query(element, '', function (err, result) {
+    function executeQuery(index) {
+        if (index >= str.length) {
+            conn.end(err => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+            return;
+        }
 
+        conn.query(str[index], '', function (err, result) {
             if (err) {
-                throw err
+                throw err;
             }
-        })
-        conn.end((err) => {
-            if (err) {
-                console.log(err)
-                return
-            }
-        })
-    });
+            executeQuery(index + 1); // 递归调用下一个查询
+        });
+    }
 
+    executeQuery(0); // 开始执行查询操作
 
-}
+};
 
 //增加数据
 exports.add = (obj, tablename, callback) => {
